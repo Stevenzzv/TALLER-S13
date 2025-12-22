@@ -55,3 +55,53 @@ void leerChar(char str[], int size)
         }
     } while (blanco(str));
 }
+void registrarUno(const Vehiculo *vehiculo) {
+    FILE *f = fopen("vehiculos.dat", "ab");
+
+    if (f == NULL) {
+        printf("Error: No se pudo abrir el archivo para escribir.\n");
+        return;
+    }
+
+    size_t escritos = fwrite(vehiculo, sizeof(Vehiculo), 1, f);
+    fclose(f);
+
+    if (escritos != 1) {
+        printf("Error: No se pudo guardar el vehiculo en el archivo.\n");
+        return;
+    }
+
+    printf("Vehiculo guardado exitosamente.\n");
+}
+
+// Actualiza solo el campo estado de un vehiculo en el archivo binario
+int actualizarEstado(int id, char nuevoEstado) {
+    FILE *f = fopen("vehiculos.dat", "rb+");
+    if (f == NULL) {
+        printf("Error: No se pudo abrir el archivo para actualizar.\n");
+        return 0;
+    }
+
+    Vehiculo v;
+    while (fread(&v, sizeof(Vehiculo), 1, f) == 1) {
+        if (v.id == id) {
+            v.estado = nuevoEstado;
+            if (fseek(f, -(long)sizeof(Vehiculo), SEEK_CUR) != 0) {
+                printf("Error: No se pudo posicionar en el archivo.\n");
+                fclose(f);
+                return 0;
+            }
+            if (fwrite(&v, sizeof(Vehiculo), 1, f) != 1) {
+                printf("Error: No se pudo escribir la actualizacion.\n");
+                fclose(f);
+                return 0;
+            }
+            fclose(f);
+            return 1;
+        }
+    }
+
+    fclose(f);
+    printf("No se encontro un vehiculo con ese ID para actualizar.\n");
+    return 0;
+}

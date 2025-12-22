@@ -21,6 +21,8 @@ int leerInteger(void);
 void limpiarBuffer(void);
 int blanco(const char str[]);
 void leerChar(char str[], int size);
+void registrarUno(const Vehiculo *vehiculo);
+int actualizarEstado(int id, char nuevoEstado);
 
 
 #endif // FUNCIONES_H

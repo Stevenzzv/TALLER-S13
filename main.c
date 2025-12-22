@@ -83,13 +83,37 @@ char marca[MAX_MARCAS][MAX];
                     opc = leerInteger();
                 }
                 strcpy(vehiculos[contador].marca, marca[opc]);
-                
+
+                registrarUno(&vehiculos[contador]);
                 contador++;
                 printf("Vehiculo agregado exitosamente!\n");
             }
             else if (continuar == 2)
             {
-                //Eliminar vehiculo
+                if (contador == 0) {
+                    printf("No hay vehiculos para eliminar.\n");
+                    break;
+                }
+
+                printf("Ingrese el ID del vehiculo a marcar como no disponible: \n>> ");
+                int idEliminar = leerInteger();
+                int encontrado = 0;
+
+                for (int i = 0; i < contador; i++) {
+                    if (vehiculos[i].id == idEliminar) {
+                        vehiculos[i].estado = 0;
+                        if (actualizarEstado(idEliminar, 0)) {
+                            printf("Estado actualizado en archivo.\n");
+                        }
+                        printf("Vehiculo marcado como no disponible.\n");
+                        encontrado = 1;
+                        break;
+                    }
+                }
+
+                if (!encontrado) {
+                    printf("No se encontro un vehiculo con ese ID.\n");
+                }
             }
             else
             {
