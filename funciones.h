@@ -14,6 +14,12 @@ typedef struct
     int usado;
     int id;
 } Vehiculo;
+typedef struct {
+    char vendedor [MAX];
+    char cliente [MAX];
+    int idVehiculoVendido;
+    float precioVenta;
+} Venta;
 
 void menu(void);
 int leerInteger(void);
@@ -27,5 +33,10 @@ int cargarVehiculos(Vehiculo vehiculos[], int maxVehiculos);
 void guardarMarcas(const char marcas[][MAX], int cantidad);
 int cargarMarcas(char marcas[][MAX], int maxMarcas);
 void buscarVehiculoPorID(int idBuscado);
-
+float leerPresupuesto();
+void guardarPresupuesto(float presupuesto);
+void registrarVenta(int idVehiculo);
+float leerGanancias();
+void guardarGanancias(float ganancias);
+void listarVehiculosDisponibles();
 #endif // FUNCIONES_H

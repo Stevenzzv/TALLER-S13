@@ -8,6 +8,10 @@ int main(int argc, char const *argv[])
     Vehiculo vehiculos[MAX_VEHICULOS]; // Arreglo para almacenar vehiculos
     int contador = 0;                  // Contador de vehiculos almacenados
     char marca[MAX_MARCAS][MAX];
+    int idOpc;
+
+    float presupuesto = leerPresupuesto();
+    float ventaTotal = leerGanancias();
 
     // Cargar datos desde los archivos al inicio del programa
     contador = cargarVehiculos(vehiculos, MAX_VEHICULOS);
@@ -28,20 +32,7 @@ int main(int argc, char const *argv[])
             }
             else
             {
-                printf("Vehiculos disponibles:\n");
-                for (int i = 0; i < contador; i++)
-                {
-                    if (vehiculos[i].estado == 1) // Si el vehiculo esta disponible
-                    {
-                        printf("ID: %d | Modelo: %s | Anio: %d | Precio: %.2f$ | Marca: %s |%s\n",
-                               vehiculos[i].id,
-                               vehiculos[i].modelo,
-                               vehiculos[i].anio,
-                               vehiculos[i].precio,
-                               vehiculos[i].marca,
-                               vehiculos[i].usado ? "Usado" : "Nuevo");
-                    }
-                }
+                listarVehiculosDisponibles();
             }
 
             break;
@@ -71,6 +62,10 @@ int main(int argc, char const *argv[])
                 printf("Ingrese el precio del vehiculo (USD): \n>> ");
                 scanf("%f", &vehiculos[contador].precio);
 
+                presupuesto += vehiculos[contador].precio;
+                guardarPresupuesto(presupuesto);
+
+
                 printf("Ingrese si es usado (1: usado, 0: nuevo): \n>> ");
                 vehiculos[contador].usado = leerInteger();
 
@@ -91,6 +86,7 @@ int main(int argc, char const *argv[])
                 strcpy(vehiculos[contador].marca, marca[opc]);
 
                 registrarUno(&vehiculos[contador]);
+                printf("Presupuesto total acumulado: %.2f USD\n", presupuesto);
                 contador++;
                 printf("Vehiculo agregado exitosamente!\n");
             }
@@ -117,6 +113,7 @@ int main(int argc, char const *argv[])
                         }
                         printf("Vehiculo marcado como no disponible.\n");
                         encontrado = 1;
+                        contador--;
                         break;
                     }
                 }
@@ -156,14 +153,23 @@ int main(int argc, char const *argv[])
             buscarVehiculoPorID(leerInteger());
             break;
         case 5:
+            listarVehiculosDisponibles();   
+            printf("Ingrese el ID del vehiculo a vender:\n>> ");
+            idOpc = leerInteger();
+            registrarVenta(idOpc);
+
+            
+            break;
+        case 6:
             printf("Gracias...\n");
             break;
 
         default:
+            printf("Opcion invalida. Intente nuevamente.\n");
             break;
         }
 
-    } while (opcion != 5);
+    } while (opcion != 6);
 
     return 0;
 }
