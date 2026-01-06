@@ -15,7 +15,6 @@ typedef struct
     int id;
 } Vehiculo;
 
-
 void menu(void);
 int leerInteger(void);
 void limpiarBuffer(void);
@@ -23,6 +22,9 @@ int blanco(const char str[]);
 void leerChar(char str[], int size);
 void registrarUno(const Vehiculo *vehiculo);
 int actualizarEstado(int id, char nuevoEstado);
-
+// Declarar las nuevas funciones para persistencia de datos
+int cargarVehiculos(Vehiculo vehiculos[], int maxVehiculos);
+void guardarMarcas(const char marcas[][MAX], int cantidad);
+int cargarMarcas(char marcas[][MAX], int maxMarcas);
 
 #endif // FUNCIONES_H

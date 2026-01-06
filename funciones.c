@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "funciones.h"
-void menu(void){
+void menu(void)
+{
     printf("-------------MENU--------------\n");
     printf("1. Listar vehiculos disponibles\n");
     printf("2. Agregar/Eliminar vehiculo\n");
@@ -10,9 +11,10 @@ void menu(void){
     printf("-------------------------------\n");
     printf(">> ");
 }
-int leerInteger(void){
+int leerInteger(void)
+{
     int d;
-    while ((scanf("%d", &d))!=1)
+    while ((scanf("%d", &d)) != 1)
     {
         limpiarBuffer();
         printf("**Error** Entrada invalida.\n");
@@ -22,9 +24,11 @@ int leerInteger(void){
     limpiarBuffer(); // Limpiar el buffer despues de leer el entero
     return d;
 }
-void limpiarBuffer(void){
+void limpiarBuffer(void)
+{
     int c;
-    while ((c = getchar()) != '\n' && c != EOF);
+    while ((c = getchar()) != '\n' && c != EOF)
+        ;
 }
 int blanco(const char str[])
 {
@@ -55,10 +59,12 @@ void leerChar(char str[], int size)
         }
     } while (blanco(str));
 }
-void registrarUno(const Vehiculo *vehiculo) {
+void registrarUno(const Vehiculo *vehiculo)
+{
     FILE *f = fopen("vehiculos.dat", "ab");
 
-    if (f == NULL) {
+    if (f == NULL)
+    {
         printf("Error: No se pudo abrir el archivo para escribir.\n");
         return;
     }
@@ -66,7 +72,8 @@ void registrarUno(const Vehiculo *vehiculo) {
     size_t escritos = fwrite(vehiculo, sizeof(Vehiculo), 1, f);
     fclose(f);
 
-    if (escritos != 1) {
+    if (escritos != 1)
+    {
         printf("Error: No se pudo guardar el vehiculo en el archivo.\n");
         return;
     }
@@ -75,23 +82,29 @@ void registrarUno(const Vehiculo *vehiculo) {
 }
 
 // Actualiza solo el campo estado de un vehiculo en el archivo binario
-int actualizarEstado(int id, char nuevoEstado) {
+int actualizarEstado(int id, char nuevoEstado)
+{
     FILE *f = fopen("vehiculos.dat", "rb+");
-    if (f == NULL) {
+    if (f == NULL)
+    {
         printf("Error: No se pudo abrir el archivo para actualizar.\n");
         return 0;
     }
 
     Vehiculo v;
-    while (fread(&v, sizeof(Vehiculo), 1, f) == 1) {
-        if (v.id == id) {
+    while (fread(&v, sizeof(Vehiculo), 1, f) == 1)
+    {
+        if (v.id == id)
+        {
             v.estado = nuevoEstado;
-            if (fseek(f, -(long)sizeof(Vehiculo), SEEK_CUR) != 0) {
+            if (fseek(f, -(long)sizeof(Vehiculo), SEEK_CUR) != 0)
+            {
                 printf("Error: No se pudo posicionar en el archivo.\n");
                 fclose(f);
                 return 0;
             }
-            if (fwrite(&v, sizeof(Vehiculo), 1, f) != 1) {
+            if (fwrite(&v, sizeof(Vehiculo), 1, f) != 1)
+            {
                 printf("Error: No se pudo escribir la actualizacion.\n");
                 fclose(f);
                 return 0;
@@ -104,4 +117,67 @@ int actualizarEstado(int id, char nuevoEstado) {
     fclose(f);
     printf("No se encontro un vehiculo con ese ID para actualizar.\n");
     return 0;
+}
+
+// Agregar función para cargar vehículos desde el archivo binario
+int cargarVehiculos(Vehiculo vehiculos[], int maxVehiculos)
+{
+    FILE *f = fopen("vehiculos.dat", "rb");
+    if (f == NULL)
+    {
+        printf("No se encontro el archivo de vehiculos. Se iniciara con una lista vacia.\n");
+        return 0; // No hay vehículos cargados
+    }
+
+    int contador = 0;
+    while (contador < maxVehiculos && fread(&vehiculos[contador], sizeof(Vehiculo), 1, f) == 1)
+    {
+        contador++;
+    }
+
+    fclose(f);
+    return contador; // Retorna el número de vehículos cargados
+}
+
+// Agregar función para guardar marcas en un archivo de texto
+void guardarMarcas(const char marcas[][MAX], int cantidad)
+{
+    FILE *f = fopen("marcas.txt", "w");
+    if (f == NULL)
+    {
+        printf("Error: No se pudo abrir el archivo de marcas para escribir.\n");
+        return;
+    }
+
+    for (int i = 0; i < cantidad; i++)
+    {
+        fprintf(f, "%s\n", marcas[i]);
+    }
+
+    fclose(f);
+}
+
+// Agregar función para cargar marcas desde un archivo de texto
+int cargarMarcas(char marcas[][MAX], int maxMarcas)
+{
+    FILE *f = fopen("marcas.txt", "r");
+    if (f == NULL)
+    {
+        printf("No se encontro el archivo de marcas. Se iniciara con una lista vacia.\n");
+        return 0; // No hay marcas cargadas
+    }
+
+    int contador = 0;
+    while (contador < maxMarcas && fgets(marcas[contador], MAX, f))
+    {
+        size_t len = strlen(marcas[contador]);
+        if (len > 0 && marcas[contador][len - 1] == '\n')
+        {
+            marcas[contador][len - 1] = '\0'; // Eliminar el salto de línea
+        }
+        contador++;
+    }
+
+    fclose(f);
+    return contador; // Retorna el número de marcas cargadas
 }
