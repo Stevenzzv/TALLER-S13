@@ -7,6 +7,7 @@ int main()
     int opcion, subopcion = 0, opcionmarca, Eliminar;
     Vehiculo vehiculos[MAX_VEHICULOS]; // Arreglo para almacenar vehiculos
     int contador = 0;                  // Contador de vehiculos almacenados
+    int marcasContador = 0;
     char marca[MAX_MARCAS][MAX];
     char temporal[MAX];
 
@@ -23,7 +24,16 @@ int main()
             listarVehiculosDisponibles();
             break;
         case 2: // Agregar/Eliminar vehiculo
-           
+           if (contador >= MAX_VEHICULOS) {
+                printf("No se pueden agregar más vehículos. Capacidad máxima alcanzada.\n");
+                break;
+            }
+            if (marcasContador == 0)
+            {
+                printf("No hay marcas disponibles. Por favor, agregue una marca primero.\n");
+                break;
+            }
+            
             printf("Que desea hacer?\n");
             printf("1. Agregar vehiculo\n");
             printf("2. Eliminar vehiculo\n>> ");
@@ -47,9 +57,20 @@ int main()
             
             break;
             case 3: // Agregar/Eliminar marca de vehiculo
+            if (marcasContador >= MAX_MARCAS) {
+                printf("No se pueden agregar más marcas. Capacidad máxima alcanzada.\n");
+                break;
+            }
                 MarcaNueva();
+                marcasContador++;
             break;
         case 4: //Buscar vehiculos por id, marca, modelo o anio
+            if (contador == 0)
+            {
+                printf("No hay vehículos disponibles para buscar.\n");
+                break;
+            }
+            printf("Ingrese el ID del vehiculo a buscar:\n>> ");
             buscarVehiculoPorID(leerInteger());
             break;
         case 5:
@@ -57,6 +78,7 @@ int main()
             break;
 
         default:
+        printf("Opcion invalida. Intente nuevamente.\n");
             break;
         }
 

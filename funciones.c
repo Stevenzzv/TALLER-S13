@@ -21,8 +21,21 @@ int leerInteger(void)
         printf("Intenta nuevamente\n");
         printf(">> ");
     }
-    limpiarBuffer(); // Limpiar el buffer despues de leer el entero
+    limpiarBuffer(); 
     return d;
+}
+float leerFloat(void)
+{
+    float f;
+    while ((scanf("%f", &f)) != 1)
+    {
+        limpiarBuffer();
+        printf("**Error** Entrada invalida.\n");
+        printf("Intenta nuevamente\n");
+        printf(">> ");
+    }
+    limpiarBuffer(); 
+    return f;
 }
 void limpiarBuffer(void)
 {
@@ -135,8 +148,7 @@ void AutoNuevo (char marca[], int id) {
     printf("Ingrese el anio del vehiculo:\n>> ");
     nuevoVehiculo.anio = leerInteger();
     printf("Ingrese el precio del vehiculo:\n>> ");
-    scanf("%f", &nuevoVehiculo.precio);
-    limpiarBuffer();
+    nuevoVehiculo.precio = leerFloat();
     printf("Ingrese si el vehiculo es usado (1: usado, 0: nuevo):\n>> ");
     nuevoVehiculo.usado = leerInteger();
     nuevoVehiculo.id = id; 

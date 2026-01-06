@@ -17,6 +17,7 @@ typedef struct
 
 void menu(void);
 int leerInteger(void);
+float leerFloat(void);
 void limpiarBuffer(void);
 int blanco(const char str[]);
 void leerChar(char str[], int size);
