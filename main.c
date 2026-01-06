@@ -38,6 +38,9 @@ int main()
             printf("1. Agregar vehiculo\n");
             printf("2. Eliminar vehiculo\n>> ");
             subopcion = leerInteger();
+            while (subopcion < 1 || subopcion > 2){
+                subopcion = leerInteger();
+            }
             if (subopcion == 1)
             {
                 listarMarcas();
@@ -49,6 +52,11 @@ int main()
             }
             else if (subopcion == 2)
             {
+                if (contador == 0)
+                {
+                    printf("No hay vehículos disponibles para eliminar.\n");
+                    break;
+                }
                 listarVehiculosDisponibles();
                 printf("Ingrese el ID del vehiculo a eliminar:\n>> ");
                 Eliminar = leerInteger();
