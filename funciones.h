@@ -1,6 +1,6 @@
 #ifndef FUNCIONES_H
-#define FUNCIONES_H
 #include <string.h>
+#define FUNCIONES_H
 #define MAX 30
 #define MAX_VEHICULOS 30
 #define MAX_MARCAS 10
@@ -20,11 +20,14 @@ int leerInteger(void);
 void limpiarBuffer(void);
 int blanco(const char str[]);
 void leerChar(char str[], int size);
-void registrarUno(const Vehiculo *vehiculo);
-int actualizarEstado(int id, char nuevoEstado);
-// Declarar las nuevas funciones para persistencia de datos
-int cargarVehiculos(Vehiculo vehiculos[], int maxVehiculos);
-void guardarMarcas(const char marcas[][MAX], int cantidad);
-int cargarMarcas(char marcas[][MAX], int maxMarcas);
 
+// Declarar las nuevas funciones para persistencia de datos
+
+void MarcaNueva ();
+void listarMarcas();
+void extrerMarcaArchivo (int indexMarca, char temporal[]);
+void AutoNuevo (char marca[], int id);
+void AutoEliminar (int idVehiculo);
+void listarVehiculosDisponibles();
+void buscarVehiculoPorID(int idBuscado);
 #endif // FUNCIONES_H
