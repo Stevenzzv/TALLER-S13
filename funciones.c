@@ -181,3 +181,34 @@ int cargarMarcas(char marcas[][MAX], int maxMarcas)
     fclose(f);
     return contador; // Retorna el número de marcas cargadas
 }
+
+void buscarVehiculoPorID(int idBuscado) {
+    FILE *archivo = fopen("vehiculos.dat", "rb"); 
+    if (!archivo) {
+        printf("No se encontró el archivo de vehículos.\n");
+        return;
+    }
+
+    Vehiculo v;
+    int encontrado = 0;
+
+    while (fread(&v, sizeof(Vehiculo), 1, archivo) == 1) {
+        if (v.id == idBuscado) {
+            printf("Vehículo encontrado:\n");
+            printf("ID: %d | Modelo: %s | Anio: %d | Precio: %.2f$ | Marca: %s | %s\n",
+                   v.id,
+                   v.modelo,
+                   v.anio,
+                   v.precio,
+                   v.marca,
+                   v.usado ? "Usado" : "Nuevo");
+            encontrado = 1;
+            break;
+        }
+    }
+
+    if (!encontrado)
+        printf("No se encontró un vehículo con ID %d.\n", idBuscado);
+
+    fclose(archivo);
+}

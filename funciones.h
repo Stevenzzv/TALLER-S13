@@ -26,5 +26,6 @@ int actualizarEstado(int id, char nuevoEstado);
 int cargarVehiculos(Vehiculo vehiculos[], int maxVehiculos);
 void guardarMarcas(const char marcas[][MAX], int cantidad);
 int cargarMarcas(char marcas[][MAX], int maxMarcas);
+void buscarVehiculoPorID(int idBuscado);
 
 #endif // FUNCIONES_H

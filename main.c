@@ -147,7 +147,13 @@ int main(int argc, char const *argv[])
             }
             break;
         case 4:
-            /* code */
+        if (contador == 0)
+            {
+                printf("No hay vehículos disponibles para buscar.\n");
+                break;
+            }
+            printf("Ingrese el ID del vehiculo a buscar:\n>> ");
+            buscarVehiculoPorID(leerInteger());
             break;
         case 5:
             printf("Gracias...\n");
