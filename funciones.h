@@ -15,25 +15,27 @@ typedef struct
     int id;
 } Vehiculo;
 
-typedef struct {
-    char vendedor [MAX];
+typedef struct
+{
+    char vendedor[MAX];
     float tarifaComision;
     float totalVendido;
 } Vendedor;
 
-typedef struct {
+typedef struct
+{
     char nombre[MAX];
     char direccion[MAX];
     char telefono[MAX];
 } Cliente;
 
-typedef struct {
+typedef struct
+{
     Cliente cliente;
     Vendedor vendedor;
     int idVehiculoVendido;
     float ganancia;
 } Venta;
-
 
 void menu(void);
 int leerInteger(void);
@@ -42,16 +44,16 @@ void limpiarBuffer(void);
 int blanco(const char str[]);
 void leerChar(char str[], int size);
 void registrarUno(const Vehiculo *vehiculo);
-int actualizarEstado(int id, char nuevoEstado);
+int actualizarEstado(int id, int nuevoEstado);
 // Declarar las nuevas funciones para persistencia de datos
 int cargarVehiculos(Vehiculo vehiculos[], int maxVehiculos);
 void guardarMarcas(const char marcas[][MAX], int cantidad);
 int cargarMarcas(char marcas[][MAX], int maxMarcas);
 void buscarVehiculoPorID(int idBuscado);
-float leerPresupuesto();
+/* float leerPresupuesto(); */
 void guardarPresupuesto(float presupuesto);
 void registrarVenta(int idVehiculo);
 void guardarGanancias(float ganancias);
 void listarVehiculosDisponibles();
-void mostrarVentas ();
+void mostrarVentas();
 #endif // FUNCIONES_H
