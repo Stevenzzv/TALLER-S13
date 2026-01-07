@@ -14,15 +14,30 @@ typedef struct
     int usado;
     int id;
 } Vehiculo;
+
 typedef struct {
     char vendedor [MAX];
-    char cliente [MAX];
+    float tarifaComision;
+    float totalVendido;
+} Vendedor;
+
+typedef struct {
+    char nombre[MAX];
+    char direccion[MAX];
+    char telefono[MAX];
+} Cliente;
+
+typedef struct {
+    Cliente cliente;
+    Vendedor vendedor;
     int idVehiculoVendido;
-    float precioVenta;
+    float ganancia;
 } Venta;
+
 
 void menu(void);
 int leerInteger(void);
+float leerFloat(void);
 void limpiarBuffer(void);
 int blanco(const char str[]);
 void leerChar(char str[], int size);
@@ -36,7 +51,7 @@ void buscarVehiculoPorID(int idBuscado);
 float leerPresupuesto();
 void guardarPresupuesto(float presupuesto);
 void registrarVenta(int idVehiculo);
-float leerGanancias();
 void guardarGanancias(float ganancias);
 void listarVehiculosDisponibles();
+void mostrarVentas ();
 #endif // FUNCIONES_H

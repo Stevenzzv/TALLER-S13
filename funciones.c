@@ -8,7 +8,8 @@ void menu(void)
     printf("3. Agregar Marca de Vehiculo\n");
     printf("4. Buscar vehiculo\n");
     printf("5. Registrar venta\n");
-    printf("6. Salir\n");
+    printf("6. Mostrar ventas\n");
+    printf("7. Salir\n");
     printf("-------------------------------\n");
     printf(">> ");
 }
@@ -24,6 +25,19 @@ int leerInteger(void)
     }
     limpiarBuffer(); // Limpiar el buffer despues de leer el entero
     return d;
+}
+float leerFloat(void)
+{
+    float f;
+    while ((scanf("%f", &f)) != 1)
+    {
+        limpiarBuffer();
+        printf("**Error** Entrada invalida.\n");
+        printf("Intenta nuevamente\n");
+        printf(">> ");
+    }
+    limpiarBuffer(); // Limpiar el buffer despues de leer el entero
+    return f;
 }
 void limpiarBuffer(void)
 {
@@ -226,7 +240,7 @@ float leerPresupuesto() {
 }
 
 void guardarPresupuesto(float presupuesto) {
-    FILE *archivo = fopen("presupuesto.bin", "wb");
+    FILE *archivo = fopen("presupuesto.bin", "ab");
     if (!archivo) {
         printf("Error al guardar el presupuesto.\n");
         return;
@@ -235,113 +249,111 @@ void guardarPresupuesto(float presupuesto) {
     fclose(archivo);
 }
 
-void registrarVenta(int idVehiculo) {
-    int precioextraido;
-    // Abrir vehículos en modo lectura/escritura
-    FILE *archivoVehiculos = fopen("vehiculos.dat", "r+b");
-    if (!archivoVehiculos) {
-        printf("Error: No se pudo abrir el archivo de vehículos.\n");
+void listarVehiculosDisponibles() {
+
+    FILE *archivo = fopen("vehiculos.dat", "rb");
+    if (!archivo) {
+        printf("No se encontró el archivo de vehículos.\n");
         return;
     }
 
-    Vehiculo vehiculo;
+    Vehiculo v;
     int encontrado = 0;
-    long pos = 0;
 
-    while (fread(&vehiculo, sizeof(Vehiculo), 1, archivoVehiculos) == 1) {
-        if (vehiculo.id == idVehiculo && vehiculo.estado == 1) {
-            
-            vehiculo.estado = 0; // marcar como vendido
+    printf("Vehículos disponibles:\n");
+    while (fread(&v, sizeof(Vehiculo), 1, archivo) == 1) {
+        if (v.estado == 1) { // Si el vehículo está disponible
+            printf("ID: %-4d | Modelo: %s | Anio: %d | Precio: %.2f$ | Marca: %s | %s | %s |\n",
+                   v.id,
+                   v.modelo,
+                   v.anio,
+                   v.precio,
+                   v.marca,
+                   v.usado ? "Usado" : "Nuevo",
+                (v.estado == 1) ? "Disponible" : "No Disponible");
             encontrado = 1;
-            precioextraido = vehiculo.precio;
-            break;
         }
-        pos++;
     }
 
-    if (!encontrado) {
-        printf("No se encontró un vehículo disponible con ID %d.\n", idVehiculo);
-        fclose(archivoVehiculos);
+    if (!encontrado)
+        printf("No hay vehículos disponibles en este momento.\n");
+
+    fclose(archivo);
+}
+
+void registrarVenta (int id){
+    FILE *archivo = fopen("ventas.dat", "ab");
+    if (!archivo) {
+        printf("Error al abrir el archivo de ventas.\n");
         return;
     }
 
-    // Sobrescribir vehículo en el archivo
-    fseek(archivoVehiculos, pos * sizeof(Vehiculo), SEEK_SET);
-    fwrite(&vehiculo, sizeof(Vehiculo), 1, archivoVehiculos);
-    fclose(archivoVehiculos);
+    Venta nuevaVenta;
+    nuevaVenta.idVehiculoVendido = id;
 
-    // Registrar la venta
-    FILE *f = fopen("ventas.dat", "ab");
-    if (!f) {
-        printf("Error: No se pudo abrir el archivo de ventas.\n");
+    printf("Ingrese el nombre del cliente:\n>> ");
+    leerChar(nuevaVenta.cliente.nombre, MAX);
+
+    printf("Ingrese la direccion del cliente:\n>> ");
+    leerChar(nuevaVenta.cliente.direccion, MAX);
+
+    printf("Ingrese el telefono del cliente:\n>> ");
+    leerChar(nuevaVenta.cliente.telefono, MAX);
+
+    printf("Ingrese el nombre del vendedor:\n>> ");
+    leerChar(nuevaVenta.vendedor.vendedor, MAX);
+
+    printf("Ingrese la tarifa de comision del vendedor (en porcentaje):\n>> ");
+    nuevaVenta.vendedor.tarifaComision = leerFloat();
+    
+    nuevaVenta.ganancia = 0.0; // Inicializar ganancia en 0, se puede calcular despues
+    FILE *archivoVehiculos = fopen("vehiculos.dat", "rb");
+    if (!archivoVehiculos) {
+        printf("Error al abrir el archivo de vehiculos para calcular ganancia.\n");
+        fclose(archivo);
+        return;
+    }
+    Vehiculo v;
+    int encontrado = 0;
+    while ((fread(&v, sizeof(Vehiculo), 1, archivoVehiculos) == 1) && !encontrado) {
+        if (v.id == id) {
+            nuevaVenta.vendedor.totalVendido += (nuevaVenta.vendedor.tarifaComision / 100.0f) * v.precio;
+            nuevaVenta.ganancia = v.precio - (v.precio * (nuevaVenta.vendedor.tarifaComision / 100.0f));
+            v.estado = 0; 
+            encontrado = 1;
+                break;
+            }
+        }
+        fclose(archivoVehiculos);
+    fwrite(&nuevaVenta, sizeof(Venta), 1, archivo);
+    fclose(archivo);
+
+    printf("Venta registrada exitosamente.\n");
+    
+}
+
+void mostrarVentas () {
+    FILE *archivo = fopen("ventas.dat", "rb");
+    if (!archivo) {
+        printf("No se encontró el archivo de ventas.\n");
         return;
     }
 
     Venta v;
-    printf("Ingrese el nombre del vendedor:\n>> ");
-    leerChar(v.vendedor, MAX);
-    printf("Ingrese el nombre del cliente:\n>> ");
-    leerChar(v.cliente, MAX);
+    int encontrado = 0;
 
-    v.idVehiculoVendido = vehiculo.id;
-    v.precioVenta = vehiculo.precio; // ahora sí tiene el precio real
-
-    fwrite(&v, sizeof(Venta), 1, f);
-    fclose(f);
-
-    // Actualizar presupuesto
-    float presupuestoTotal = leerPresupuesto();
-    presupuestoTotal -= vehiculo.precio;
-    guardarPresupuesto(presupuestoTotal);
-
-    printf("Venta registrada exitosamente.\n");
-    printf("Presupuesto actualizado: %.2f USD\n", presupuestoTotal);
-
-    float gananciasTotales = leerGanancias();
-    gananciasTotales += vehiculo.precio;
-    guardarGanancias(gananciasTotales);
-
-    printf("Ganancias totales actualizadas: %.2f USD\n", gananciasTotales);
-}
-float leerGanancias() {
-    FILE *archivo = fopen("ganancias.bin", "rb");
-    float ganancia = 0.0f;
-
-    if (archivo) {
-        fread(&ganancia, sizeof(float), 1, archivo);
-        fclose(archivo);
+    printf("Ventas realizadas:\n");
+    while (fread(&v, sizeof(Venta), 1, archivo) == 1) {
+        printf("ID Vehiculo Vendido: %d | Cliente: %s | Vendedor: %s | Ganancia: %.2f$\n",
+               v.idVehiculoVendido,
+               v.cliente.nombre,
+               v.vendedor.vendedor,
+               v.ganancia);
+        encontrado = 1;
     }
 
-    return ganancia; // Si no existe el archivo, retorna 0
-}
-void guardarGanancias(float ganancia) {
-    FILE *archivo = fopen("ganancias.bin", "wb");
-    if (!archivo) {
-        printf("Error al guardar las ganancias.\n");
-        return;
-    }
-    fwrite(&ganancia, sizeof(float), 1, archivo);
+    if (!encontrado)
+        printf("No hay ventas registradas en este momento.\n");
+
     fclose(archivo);
-}
-
-void listarVehiculosDisponibles() {
-    printf("Vehiculos disponibles:\n");
-                FILE *f = fopen("vehiculos.dat", "rb");
-                Vehiculo b;
-
-                size_t read;
-                while ((read = fread(&b, sizeof(Vehiculo), 1, f)) == 1)
-                {
-                    if (b.estado == 1) // Si el vehiculo esta disponible
-                    {
-                        printf("ID: %d | Modelo: %s | Anio: %d | Precio: %.2f$ | Marca: %s |%s\n",
-                               b.id,
-                               b.modelo,
-                               b.anio,
-                               b.precio,
-                               b.marca,
-                               b.usado ? "Usado" : "Nuevo");
-                    }
-                }
-                fclose(f);
 }
