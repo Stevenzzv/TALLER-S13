@@ -478,7 +478,7 @@ void buscarVehiculoPorPrecio(float precioMin, float precioMax)
     fclose(archivo);
 }
 
-void buscarVehiculoPreferencial(int id, const char *marca, int anio, float precio)
+void buscarVehiculoPreferencial( const char *marca, int anio, float precio)
 {
     FILE *archivo = fopen("vehiculos.dat", "rb");
     if (!archivo)
@@ -494,7 +494,7 @@ void buscarVehiculoPreferencial(int id, const char *marca, int anio, float preci
     printf("\n------------------------------------------------------------------------------------\n\n");
     while (fread(&v, sizeof(Vehiculo), 1, archivo) == 1)
     {
-        if (v.id == id && strcmp(v.marca, marca) == 0 && v.anio == anio && v.precio <= precio && v.estado == 1)
+        if ( strcmp(v.marca, marca) == 0 && v.anio == anio && v.precio <= precio && v.estado == 1)
         {
             printf("ID: %d | Modelo: %s | Anio: %d | Precio: %.2f$ | Marca: %s | %s\n",
                    v.id, v.modelo, v.anio, v.precio, v.marca, v.usado ? "Usado" : "Nuevo");

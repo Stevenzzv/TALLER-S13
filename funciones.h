@@ -59,5 +59,5 @@ void mostrarVentas();
 void buscarVehiculoPorMarca(const char *marcaBuscada);
 void buscarVehiculoPorAnio(int anioBuscado);
 void buscarVehiculoPorPrecio(float precioMin, float precioMax);
-void buscarVehiculoPreferencial(int id, const char *marca, int anio, float precio);
+void buscarVehiculoPreferencial( const char *marca, int anio, float precio);
 #endif // FUNCIONES_H
