@@ -187,19 +187,36 @@ int main(int argc, char const *argv[])
             {
             case 1:
                 printf("\nIngrese un ID\n>> ");
-                buscarVehiculoPorID((leerInteger() - 1));
+                buscarVehiculoPorID((leerInteger()));
                 break;
             case 2:
-
+                printf("\nIngrese la marca a buscar\n>> ");
+                char marcaBuscada[MAX];
+                leerChar(marcaBuscada, MAX);
+                buscarVehiculoPorMarca(marcaBuscada);
                 break;
             case 3:
-
+                printf("\nIngrese el anio a buscar\n>> ");
+                buscarVehiculoPorAnio(leerInteger());
                 break;
             case 4:
-
+                printf("\nIngrese el precio minimo\n>> ");
+                float precioMin = leerFloat();
+                printf("\nIngrese el precio maximo\n>> ");
+                float precioMax = leerFloat();
+                buscarVehiculoPorPrecio(precioMin, precioMax);
                 break;
             case 5:
-
+                printf("\nIngrese el ID\n>> ");
+                int id = leerInteger();
+                printf("\nIngrese la marca\n>> ");
+                char marca[MAX];
+                leerChar(marca, MAX);
+                printf("\nIngrese el anio\n>> ");
+                int anio = leerInteger();
+                printf("\nIngrese el precio maximo\n>> ");
+                float precio = leerFloat();
+                buscarVehiculoPreferencial(id, marca, anio, precio);
                 break;
             }
             break;

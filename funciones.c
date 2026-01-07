@@ -209,7 +209,7 @@ void buscarVehiculoPorID(int idBuscado)
     Vehiculo v;
     int encontrado = 0;
 
-    while (fread(&v, sizeof(Vehiculo), 1, archivo) == 1)
+    while (fread(&v, sizeof(Vehiculo), 1, archivo) == 1 && v.estado == 1)
     {
         if (v.id == idBuscado)
         {
@@ -381,6 +381,130 @@ void mostrarVentas()
 
     if (!encontrado)
         printf("No hay ventas registradas en este momento.\n");
+
+    fclose(archivo);
+}
+
+void buscarVehiculoPorMarca(const char *marcaBuscada)
+{
+    FILE *archivo = fopen("vehiculos.dat", "rb");
+    if (!archivo)
+    {
+        printf("No se encontro el archivo de vehículos.\n");
+        return;
+    }
+
+    Vehiculo v;
+    int encontrado = 0;
+
+    printf("\nVehiculos encontrados con la marca '%s':\n", marcaBuscada);
+    printf("\n------------------------------------------------------------------------------------\n\n");
+    while (fread(&v, sizeof(Vehiculo), 1, archivo) == 1)
+    {
+        if (strcmp(v.marca, marcaBuscada) == 0 && v.estado == 1)
+        {
+            printf("ID: %d | Modelo: %s | Anio: %d | Precio: %.2f$ | Marca: %s | %s\n",
+                   v.id, v.modelo, v.anio, v.precio, v.marca, v.usado ? "Usado" : "Nuevo");
+            printf("\n------------------------------------------------------------------------------------\n\n");
+            encontrado = 1;
+        }
+    }
+
+    if (!encontrado)
+        printf("No se encontraron vehiculos con la marca '%s'.\n\n", marcaBuscada);
+
+    fclose(archivo);
+}
+
+void buscarVehiculoPorAnio(int anioBuscado)
+{
+    FILE *archivo = fopen("vehiculos.dat", "rb");
+    if (!archivo)
+    {
+        printf("No se encontro el archivo de vehículos.\n");
+        return;
+    }
+
+    Vehiculo v;
+    int encontrado = 0;
+
+    printf("\nVehiculos encontrados del anio %d:\n", anioBuscado);
+    printf("\n------------------------------------------------------------------------------------\n\n");
+    while (fread(&v, sizeof(Vehiculo), 1, archivo) == 1)
+    {
+        if (v.anio == anioBuscado && v.estado == 1)
+        {
+            printf("ID: %d | Modelo: %s | Anio: %d | Precio: %.2f$ | Marca: %s | %s\n",
+                   v.id, v.modelo, v.anio, v.precio, v.marca, v.usado ? "Usado" : "Nuevo");
+            printf("\n------------------------------------------------------------------------------------\n\n");
+            encontrado = 1;
+        }
+    }
+
+    if (!encontrado)
+        printf("No se encontraron vehiculos del anio %d.\n\n", anioBuscado);
+
+    fclose(archivo);
+}
+
+void buscarVehiculoPorPrecio(float precioMin, float precioMax)
+{
+    FILE *archivo = fopen("vehiculos.dat", "rb");
+    if (!archivo)
+    {
+        printf("No se encontro el archivo de vehículos.\n");
+        return;
+    }
+
+    Vehiculo v;
+    int encontrado = 0;
+
+    printf("\nVehiculos encontrados en el rango de precio %.2f$ - %.2f$:\n", precioMin, precioMax);
+    printf("\n------------------------------------------------------------------------------------\n\n");
+    while (fread(&v, sizeof(Vehiculo), 1, archivo) == 1)
+    {
+        if (v.precio >= precioMin && v.precio <= precioMax && v.estado == 1)
+        {
+            printf("ID: %d | Modelo: %s | Anio: %d | Precio: %.2f$ | Marca: %s | %s\n",
+                   v.id, v.modelo, v.anio, v.precio, v.marca, v.usado ? "Usado" : "Nuevo");
+            printf("\n------------------------------------------------------------------------------------\n\n");
+            encontrado = 1;
+        }
+    }
+
+    if (!encontrado)
+        printf("No se encontraron vehiculos en el rango de precio %.2f$ - %.2f$.\n\n", precioMin, precioMax);
+
+    fclose(archivo);
+}
+
+void buscarVehiculoPreferencial(int id, const char *marca, int anio, float precio)
+{
+    FILE *archivo = fopen("vehiculos.dat", "rb");
+    if (!archivo)
+    {
+        printf("No se encontro el archivo de vehículos.\n");
+        return;
+    }
+
+    Vehiculo v;
+    int encontrado = 0;
+
+    printf("\nVehiculos encontrados con los criterios especificados:\n");
+    printf("\n------------------------------------------------------------------------------------\n\n");
+    while (fread(&v, sizeof(Vehiculo), 1, archivo) == 1)
+    {
+        if (v.id == id && strcmp(v.marca, marca) == 0 && v.anio == anio && v.precio <= precio && v.estado == 1)
+        {
+            printf("ID: %d | Modelo: %s | Anio: %d | Precio: %.2f$ | Marca: %s | %s\n",
+                   v.id, v.modelo, v.anio, v.precio, v.marca, v.usado ? "Usado" : "Nuevo");
+            printf("\n------------------------------------------------------------------------------------\n\n");
+            encontrado = 1;
+        }
+    }
+
+    if (!encontrado)
+        printf("No se encontraron vehiculos con los criterios especificados.\n\n");
 
     fclose(archivo);
 }
